@@ -7,19 +7,26 @@ const Table = () => {
 
     const [file, setFile] = useState<File|null>(null)
     const [jsonData, setJsonData] = useState("")
-    console.log([file])
+    const [sheetData, setSheetData] = useState({});
 
     const previewData = () => {
         if (file){
             const reader = new FileReader()
             reader.onload = (e) => {
                 const data = e.target?.result
+                var mySheetData = {};
                 if (data){
                     const workbook = XLSX.read(data, { type: "binary" })
-                    const sheetName = workbook.SheetNames[1]
-                    const workSheet = workbook.Sheets[sheetName]
-                    const json = XLSX.utils.sheet_to_json(workSheet)
-                    setJsonData(JSON.stringify(json, null, 2))
+                    for(var i = 0; i < workbook.SheetNames.length; i++){
+                        let sheetName = workbook.SheetNames[i];
+
+                        const workSheet = workbook.Sheets[sheetName]
+                        const json = XLSX.utils.sheet_to_json(workSheet)
+
+                        mySheetData[sheetName] = json;
+                    }
+                    setJsonData(JSON.stringify(mySheetData, null, 2))
+                    console.log(jsonData)
                 }
             };
             reader.readAsArrayBuffer(file)

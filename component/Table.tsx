@@ -14,14 +14,14 @@ const Table = () => {
             const reader = new FileReader()
             reader.onload = (e) => {
                 const data = e.target?.result
-                var mySheetData = {};
+                var mySheetData: { [ key: string]: any[] } = {};
                 if (data){
                     const workbook = XLSX.read(data, { type: "binary" })
                     for(var i = 0; i < workbook.SheetNames.length; i++){
                         let sheetName = workbook.SheetNames[i];
 
                         const workSheet = workbook.Sheets[sheetName]
-                        const json = XLSX.utils.sheet_to_json(workSheet)
+                        const json = XLSX.utils.sheet_to_json(workSheet, {raw: false})
 
                         mySheetData[sheetName] = json;
                     }
